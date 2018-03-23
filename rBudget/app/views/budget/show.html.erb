@@ -23,18 +23,18 @@
 </div>
 <div class="bottom">
     <div class="add">
-      <form class="" action="index.html" method="post">
+      <%= form_for @transaction do |f| %>
          <div class="add__container">
              <select class="add__type" name="type">
                  <option value="inc" selected>+</option>
                  <option value="exp">-</option>
              </select>
-             <input type="text" class="add__description" placeholder="Add description" name="description">
-             <input type="number" class="add__value" placeholder="Value" name="value">
+             <%= f.text_field :description, class:'add__description' %>
+             <%= f.number_field :value, class:'add__value' %>
              <button class="add__btn"><i class="ion-ios-checkmark-outline"></i></button>
-             <input class="btn btn-success" type="submit" name="" value="New">
+             <%= f.submit "Submit", class:"btn btn-success" %>
          </div>
-       </form>
+       <% end %>
     </div>
     <div class="row">
       <div class="col-md-2">

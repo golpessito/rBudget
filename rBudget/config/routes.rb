@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   get 'transactions/create'
-
   get 'transactions/destroy'
+
+  resources :transactions
 
   get 'budget/show'
   root to: 'budget#show'
