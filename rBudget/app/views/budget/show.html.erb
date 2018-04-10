@@ -2,21 +2,21 @@
 <div class="top">
     <div class="budget">
         <div class="budget__title">
-            Available Budget in <span class="budget__title--month">%Month%</span>:
+            Available Budget in <span class="budget__title--month"><%= @month %></span>:
         </div>
-        <div class="budget__value">+ 2,345.64</div>
+        <div class="budget__value"><%= @total_incomes - @total_expenses %></div>
         <div class="budget__income clearfix">
             <div class="budget__income--text">Income</div>
             <div class="right">
-                <div class="budget__income--value">+ 4,300.00</div>
+                <div class="budget__income--value">+ <%= @total_incomes %></div>
                 <div class="budget__income--percentage">&nbsp;</div>
             </div>
         </div>
         <div class="budget__expenses clearfix">
             <div class="budget__expenses--text">Expenses</div>
             <div class="right clearfix">
-                <div class="budget__expenses--value">- 1,954.36</div>
-                <div class="budget__expenses--percentage">45%</div>
+                <div class="budget__expenses--value">- <%= @total_expenses %></div>
+                <div class="budget__expenses--percentage"><%= @total_percent_exp %>%</div>
             </div>
         </div>
     </div>
@@ -25,14 +25,11 @@
     <div class="add">
       <%= form_for @transaction do |f| %>
          <div class="add__container">
-             <select class="add__type" name="type">
-                 <option value="inc" selected>+</option>
-                 <option value="exp">-</option>
-             </select>
+             <%= f.select :operation_type, [['+', 'inc'], ['-', 'exp']] ,{}, { :class => 'add__type' } %>
              <%= f.text_field :description, class:'add__description' %>
              <%= f.number_field :value, class:'add__value' %>
-             <button class="add__btn"><i class="ion-ios-checkmark-outline"></i></button>
              <%= f.submit "Submit", class:"btn btn-success" %>
+             <button class="add__btn"><i class="ion-ios-checkmark-outline"></i></button>
          </div>
        <% end %>
     </div>
@@ -43,25 +40,19 @@
         <div class="income">
             <h2 class="incomes__title">Income</h2>
             <div class="income__list">
+              <% @inc_transactions.each do |inc| %>
                 <div class="item clearfix" id="income-0">
-                    <div class="item__description">Salary</div>
+                    <div class="item__description"><%= inc.description %></div>
                     <div class="right clearfix">
-                        <div class="item__value">+ 2,100.00</div>
+                        <div class="item__value">+ <%= inc.value %></div>
                         <div class="item__delete">
-                            <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                          <%= button_to  transaction_path(inc), method: :delete, class: "item__delete--btn"  do %>
+                            <i class="ion-ios-close-outline"></i>
+                          <% end %>
                         </div>
                     </div>
                 </div>
-
-                <div class="item clearfix" id="income-1">
-                    <div class="item__description">Sold car</div>
-                    <div class="right clearfix">
-                        <div class="item__value">+ 1,500.00</div>
-                        <div class="item__delete">
-                            <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
-                        </div>
-                    </div>
-                </div>
+                <% end %>
             </div>
         </div>
       </div>
@@ -69,26 +60,20 @@
       <div class="expenses">
           <h2 class="expenses__title">Expenses</h2>
           <div class="expenses__list">
+            <% @exp_transactions.each do |exp| %>
               <div class="item clearfix" id="expense-0">
-                  <div class="item__description">Apartment rent</div>
+                  <div class="item__description"><%= exp.description %></div>
                   <div class="right clearfix">
-                      <div class="item__value">- 900.00</div>
-                      <div class="item__percentage">21%</div>
+                      <div class="item__value">- <%= exp.value %></div>
+                      <div class="item__percentage"><%= exp.percent_exp(@total_incomes) %>%</div>
                       <div class="item__delete">
-                          <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                          <%= button_to  transaction_path(exp), method: :delete, class: "item__delete--btn"  do %>
+                            <i class="ion-ios-close-outline"></i>
+                          <% end %>
                       </div>
                   </div>
               </div>
-              <div class="item clearfix" id="expense-1">
-                  <div class="item__description">Grocery shopping</div>
-                  <div class="right clearfix">
-                      <div class="item__value">- 435.28</div>
-                      <div class="item__percentage">10%</div>
-                      <div class="item__delete">
-                          <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
-                      </div>
-                  </div>
-              </div>
+            <% end %>
           </div>
       </div>
       <div class="col-md-2">
