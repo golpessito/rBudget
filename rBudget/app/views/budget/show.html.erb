@@ -4,30 +4,36 @@
         <div class="budget__title">
             Available Budget in <span class="budget__title--month"><%= @month %></span>:
         </div>
-        <div class="budget__value"><%= @total_incomes - @total_expenses %></div>
+        <div class="budget__value"><%= number_to_currency((@total_incomes - @total_expenses)) %></div>
         <div class="budget__income clearfix">
             <div class="budget__income--text">Income</div>
             <div class="right">
-                <div class="budget__income--value">+ <%= @total_incomes %></div>
+                <div class="budget__income--value">+ <%=  number_to_currency(@total_incomes) %></div>
                 <div class="budget__income--percentage">&nbsp;</div>
             </div>
         </div>
         <div class="budget__expenses clearfix">
             <div class="budget__expenses--text">Expenses</div>
             <div class="right clearfix">
-                <div class="budget__expenses--value">- <%= @total_expenses %></div>
-                <div class="budget__expenses--percentage"><%= @total_percent_exp %>%</div>
+                <div class="budget__expenses--value">- <%= number_to_currency(@total_expenses) %></div>
+                <div class="budget__expenses--percentage"><%= number_with_precision(@total_percent_exp,precision: 2,strip_insignificant_zeros: true) %>%</div>
             </div>
         </div>
     </div>
 </div>
 <div class="bottom">
     <div class="add">
+      <!-- Check for errors -->
+      <div class="alert-budget">
+        <% if flash[:alert] %>
+          <div class="alert alert-danger"><%= flash[:alert] %></div>
+        <% end %>
+      </div>
       <%= form_for @transaction do |f| %>
          <div class="add__container">
              <%= f.select :operation_type, [['+', 'inc'], ['-', 'exp']] ,{}, { :class => 'add__type' } %>
              <%= f.text_field :description, class:'add__description' %>
-             <%= f.number_field :value, class:'add__value' %>
+             <%= f.number_field :value, class:'add__value', step: :any %>
              <%= f.submit "Submit", class:"btn btn-success" %>
              <button class="add__btn"><i class="ion-ios-checkmark-outline"></i></button>
          </div>
@@ -44,7 +50,7 @@
                 <div class="item clearfix" id="income-0">
                     <div class="item__description"><%= inc.description %></div>
                     <div class="right clearfix">
-                        <div class="item__value">+ <%= inc.value %></div>
+                        <div class="item__value">+ <%= number_to_currency(inc.value) %></div>
                         <div class="item__delete">
                           <%= button_to  transaction_path(inc), method: :delete, class: "item__delete--btn"  do %>
                             <i class="ion-ios-close-outline"></i>
@@ -64,8 +70,8 @@
               <div class="item clearfix" id="expense-0">
                   <div class="item__description"><%= exp.description %></div>
                   <div class="right clearfix">
-                      <div class="item__value">- <%= exp.value %></div>
-                      <div class="item__percentage"><%= exp.percent_exp(@total_incomes) %>%</div>
+                      <div class="item__value">- <%= number_to_currency(exp.value) %></div>
+                      <div class="item__percentage"><%= number_with_precision(exp.percent_exp(@total_incomes),precision: 2,strip_insignificant_zeros: true)%>% </div>
                       <div class="item__delete">
                           <%= button_to  transaction_path(exp), method: :delete, class: "item__delete--btn"  do %>
                             <i class="ion-ios-close-outline"></i>

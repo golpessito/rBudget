@@ -7,6 +7,7 @@ class TransactionsController < ApplicationController
       flash[:notice]="Transaction Created"
       redirect_to root_path
     else
+      flash[:alert]="Transaction Incompleted check values"
       redirect_to root_path
     end
   end
